@@ -165,7 +165,7 @@ function Tick()
     gl.clearColor(0.8,0.4,0.8,1.0); //Wyczyszczenie obrazu kolorem czerwonym
     gl.clearDepth(1.0);             //Wyczyścienie bufora głebi najdalszym planem
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.useProgram(shaderProgram)   //Użycie przygotowanego programu shaderowego
+    gl.useProgram(shaderProgram);   //Użycie przygotowanego programu shaderowego
 
     gl.enable(gl.DEPTH_TEST);           // Włączenie testu głębi - obiekty bliższe mają przykrywać obiekty dalsze
     gl.depthFunc(gl.LEQUAL);            //
