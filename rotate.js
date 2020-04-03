@@ -82,23 +82,23 @@ function startGL()
     //Opis sceny 3D, kolor każdego z wierzchołków
     let vertexColor = [
         //Top
-        1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0, //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
-        1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0,
+        1.0, 0.2, 1.0,  0.0, 1.0, 0.1,  1.0, 1.0, 1.0, //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
+        1.0, 0.2, 1.0,  1.0, 1.0, 1.0,  1.0, 0.5, 0.0,
         //Left
-        0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
-        //Right
-        0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
-        //Front
-        1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, 1.0, 0.0,
+        1.0, 1.0, 1.0,  1.0, 0.8, 0.3,  0.0, 0.5, 0.7,
+        1.0, 1.0, 1.0,  0.0, 0.5, 0.7,  1.0, 0.0, 0.0,
+        //Right - granat
+        1.0, 1.0, 1.0,  1.0, 0.2, 1.0,  0.8, 0.3, 0.5,
+        1.0, 1.0, 1.0,  0.8, 0.3, 0.5,  1.0, 0.5, 0.0,
+        //Front -zolty
+        1.0, 0.2, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0, 0.0,
+        0.0, 1.0, 0.1,  1.0, 1.0, 0.0,  1.0, 1.0, 1.0,
         //Back
-        1.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0, 1.0,
-        1.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0, 1.0,
+        1.0, 0.5, 0.0,  0.8, 0.3, 0.5,  0.4, 0.2, 1.0,
+        1.0, 0.5, 0.0,  0.4, 0.2, 1.0,  1.0, 0.0, 1.0,
         //Bottom
-        0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
-        0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
+        1.0, 1.0, 0.0,  0.4, 0.2, 1.0,  1.0, 0.2, 1.0,
+        1.0, 0.2, 1.0,  0.4, 0.2, 1.0,  0.8, 0.3, 0.5,
     ];
 
     vertexColorBuffer = gl.createBuffer();
@@ -124,18 +124,25 @@ function startGL()
 let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery
 
 function MulMatrix(zMVMatrix,xMVMatrix,uMXMatrix){
-    for (let i=0; i<4; i++)
-        for (let j=0; j<4; j++){
+    for (let i=0; i<4; i++) {
+        for (let j = 0; j < 4; j++) {
             uMXMatrix[i*4+j]=0;
-            for (let k=0; k<4; k++){
-                uMXMatrix[i*4+j]=uMXMatrix[i*4+j]+zMVMatrix[i,k]*xMVMatrix[k,j];
+            for (let k = 0; k < 4; k++) {
+                uMXMatrix[i*4+j] += zMVMatrix[i*4+k] * xMVMatrix[k*4+j];
             }
         }
+    }
+    //ustawienie kamery
+    uMXMatrix[12] = 0;
+    uMXMatrix[13] = 0;
+    uMXMatrix[14] = -5;
+    uMXMatrix[15] = 1;
 }
+
 
 function Tick()
 {
-    angle=angle+1;
+   angle=angle+3;
     let uMVMatrix = [];
     let zMVMatrix = [
         Math.cos(angle*Math.PI/180.0),-Math.sin(angle*Math.PI/180.0),0,0, //Macierz Rotacji
@@ -155,7 +162,7 @@ function Tick()
 
     //Render Scene
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-    gl.clearColor(1.0,0.0,0.0,1.0); //Wyczyszczenie obrazu kolorem czerwonym
+    gl.clearColor(0.8,0.4,0.8,1.0); //Wyczyszczenie obrazu kolorem czerwonym
     gl.clearDepth(1.0);             //Wyczyścienie bufora głebi najdalszym planem
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(shaderProgram)   //Użycie przygotowanego programu shaderowego
